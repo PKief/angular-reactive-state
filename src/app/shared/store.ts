@@ -9,6 +9,7 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
+import { isEqual } from 'lodash';
 
 interface Action<T extends object> {
   name: string;
@@ -45,7 +46,7 @@ export abstract class Store<T extends object> implements OnDestroy {
     return this.state$.pipe(
       map(selector),
       map((state) => structuredClone(state)),
-      distinctUntilChanged()
+      distinctUntilChanged((prev, cur) => isEqual(prev, cur))
     );
   }
 
