@@ -54,15 +54,15 @@ export abstract class Store<T extends object> implements OnDestroy {
     return this.stateSource.getValue();
   }
 
-  private changeState(actionName: string, actionFn: (state: T) => T) {
-    this.actionSource.next({ name: actionName, actionFn });
-  }
-
   changeProperty(prop: keyof T, value: T[typeof prop]) {
     this.changeState(`Change ${String(prop)} in state`, (state) => ({
       ...state,
       [prop]: value,
     }));
+  }
+
+  private changeState(actionName: string, actionFn: (state: T) => T) {
+    this.actionSource.next({ name: actionName, actionFn });
   }
 
   private log(actionName: string, before: T, after: T) {
