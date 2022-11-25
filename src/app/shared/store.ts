@@ -49,6 +49,10 @@ export abstract class Store<T extends object> implements OnDestroy {
     );
   }
 
+  get snapshot() {
+    return this.stateSource.getValue();
+  }
+
   protected changeState(actionName: string, actionFn: (state: T) => T) {
     this.actionSource.next({ name: actionName, actionFn });
   }
