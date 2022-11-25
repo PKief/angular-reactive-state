@@ -1,11 +1,7 @@
 import { firstValueFrom } from 'rxjs';
 import { Store } from './store';
 
-class TestStore<T extends object> extends Store<T> {
-  dispatchAction(actionName: string, actionFn: (state: T) => T) {
-    this.changeState(actionName, actionFn);
-  }
-}
+class TestStore<T extends object> extends Store<T> {}
 
 describe('Store', () => {
   it('should set initial state for store', () => {
@@ -24,10 +20,7 @@ describe('Store', () => {
     const store = new TestStore<{ a: string }>({ a: 'a' });
     const stateValue = await firstValueFrom(store.select((state) => state.a));
     expect(stateValue).toBe('a');
-    store.dispatchAction('change to uppercase A', (state) => ({
-      ...state,
-      a: 'A',
-    }));
+    store.changeProperty('a', 'A');
     const updatedStateValue = await firstValueFrom(
       store.select((state) => state.a)
     );
@@ -45,10 +38,7 @@ describe('Store', () => {
     store.select((state) => state.a).subscribe(() => countStateChangesA++);
     store.select((state) => state.b).subscribe(() => countStateChangesB++);
 
-    store.dispatchAction('change to uppercase A', (state) => ({
-      ...state,
-      a: { a: 'A' },
-    }));
+    store.changeProperty('a', { a: 'A' });
 
     expect(countStateChangesA).toBe(2);
     expect(countStateChangesB).toBe(1);
