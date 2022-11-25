@@ -1,4 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { isEqual } from 'lodash';
 import {
   BehaviorSubject,
   distinctUntilChanged,
@@ -9,7 +10,6 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
-import { isEqual } from 'lodash';
 
 interface Action<T extends object> {
   name: string;
@@ -46,7 +46,7 @@ export abstract class Store<T extends object> implements OnDestroy {
     return this.state$.pipe(
       map(selector),
       map((state) => structuredClone(state)),
-      distinctUntilChanged((prev, cur) => isEqual(prev, cur))
+      this.distinctUntilObjectChanges()
     );
   }
 
@@ -55,14 +55,19 @@ export abstract class Store<T extends object> implements OnDestroy {
   }
 
   changeProperty(prop: keyof T, value: T[typeof prop]) {
-    this.changeState(`Change ${String(prop)} in state`, (state) => ({
+    this.dispatchAction(`Change ${String(prop)} in state`, (state) => ({
       ...state,
       [prop]: value,
     }));
   }
 
-  private changeState(actionName: string, actionFn: (state: T) => T) {
+  dispatchAction(actionName: string, actionFn: (state: T) => T) {
     this.actionSource.next({ name: actionName, actionFn });
+  }
+
+  private distinctUntilObjectChanges() {
+    return <T>(source: Observable<T>): Observable<T> =>
+      source.pipe(distinctUntilChanged((prev, cur) => isEqual(prev, cur)));
   }
 
   private log(actionName: string, before: T, after: T) {

@@ -27,6 +27,18 @@ describe('Store', () => {
     expect(updatedStateValue).toBe('A');
   });
 
+  it('should trigger state changes via custom actions', () => {
+    const store = new TestStore<{ a: string }>({ a: 'a' });
+    const stateValue = store.snapshot.a;
+    expect(stateValue).toBe('a');
+    store.dispatchAction('a', (state) => ({
+      ...state,
+      a: 'A',
+    }));
+    const updatedStateValue = store.snapshot.a;
+    expect(updatedStateValue).toBe('A');
+  });
+
   it('should not trigger change for state properties which are not selected', () => {
     const store = new TestStore<{ a: { a: string }; b: { b: string } }>({
       a: { a: 'a' },
