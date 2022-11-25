@@ -15,4 +15,8 @@ export class AppComponent {
     this.a$ = store.select((state) => state.a);
     this.store.changeProperty('a', 'b');
   }
+
+  changeState() {
+    this.store.changeProperty('a', Math.random().toString());
+  }
 }

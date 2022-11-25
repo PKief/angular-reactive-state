@@ -10,23 +10,29 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
+import { StoreDevTools } from './store.dev';
 
-interface Action<T extends object> {
+interface Action<State extends object> {
   name: string;
-  actionFn: (state: T) => T;
+  actionFn: (state: State) => State;
 }
 
 @Injectable()
-export abstract class Store<T extends object> implements OnDestroy {
+export abstract class Store<State extends object> implements OnDestroy {
   private readonly actionSubscription: Subscription;
-  private readonly actionSource: Subject<Action<T>>;
-  private readonly stateSource: BehaviorSubject<T>;
-  readonly state$: Observable<T>;
+  private readonly actionSource: Subject<Action<State>>;
+  private readonly stateSource: BehaviorSubject<State>;
+  private readonly devTools: StoreDevTools<State> | undefined;
+  readonly state$: Observable<State>;
 
-  constructor(initialState: T, logChanges = false) {
-    this.stateSource = new BehaviorSubject<T>(initialState);
+  constructor(initialState: State) {
+    this.stateSource = new BehaviorSubject<State>(initialState);
     this.state$ = this.stateSource.asObservable();
-    this.actionSource = new Subject<Action<T>>();
+    this.actionSource = new Subject<Action<State>>();
+
+    if (process.env['NODE_ENV'] !== 'production') {
+      this.devTools = new StoreDevTools<State>(initialState);
+    }
 
     this.actionSubscription = this.actionSource
       .pipe(observeOn(queueScheduler))
@@ -34,15 +40,13 @@ export abstract class Store<T extends object> implements OnDestroy {
         const currentState = this.stateSource.getValue();
         const nextState = action.actionFn(currentState);
 
-        if (logChanges) {
-          this.log(action.name, currentState, nextState);
-        }
+        this.devTools?.changeState(action.name, nextState);
 
         this.stateSource.next(nextState);
       });
   }
 
-  select<TX>(selector: (state: T) => TX): Observable<TX> {
+  select<TX>(selector: (state: State) => TX): Observable<TX> {
     return this.state$.pipe(
       map(selector),
       map((state) => structuredClone(state)),
@@ -54,24 +58,20 @@ export abstract class Store<T extends object> implements OnDestroy {
     return this.stateSource.getValue();
   }
 
-  changeProperty(prop: keyof T, value: T[typeof prop]) {
-    this.dispatchAction(`Change ${String(prop)} in state`, (state) => ({
+  changeProperty(prop: keyof State, value: State[typeof prop]) {
+    this.dispatchAction(`Change "${String(prop)}" in state`, (state) => ({
       ...state,
       [prop]: value,
     }));
   }
 
-  dispatchAction(actionName: string, actionFn: (state: T) => T) {
+  dispatchAction(actionName: string, actionFn: (state: State) => State) {
     this.actionSource.next({ name: actionName, actionFn });
   }
 
   private distinctUntilObjectChanges() {
     return <T>(source: Observable<T>): Observable<T> =>
       source.pipe(distinctUntilChanged((prev, cur) => isEqual(prev, cur)));
-  }
-
-  private log(actionName: string, before: T, after: T) {
-    //TBD
   }
 
   ngOnDestroy(): void {
