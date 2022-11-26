@@ -4,8 +4,10 @@ import {
   combineLatestWith,
   filter,
   from,
+  iif,
   map,
   mergeMap,
+  of,
   Subject,
   tap,
 } from 'rxjs';
@@ -35,10 +37,7 @@ export class StoreDevTools {
     const globalState: Record<string, object> = {};
     this.devTools.init(globalState);
     this.devTools.subscribe((event: MonitorEvent) => {
-      if (
-        event.type === 'DISPATCH' &&
-        event.payload.type === 'JUMP_TO_ACTION'
-      ) {
+      if (event.type === 'DISPATCH') {
         this.dispatchEvents$.next(event);
       }
     });
@@ -50,19 +49,32 @@ export class StoreDevTools {
   private watchChangesOfMonitor() {
     this.dispatchEvents$
       .pipe(
-        map((event) => event.state),
-        filter(Boolean),
-        map((state) => JSON.parse(state)),
-        map((state) => ({
-          storeName: Object.keys(state)[0],
-          state: Object.values(state)[0] as object,
-        })),
-        combineLatestWith(this.storeRegistry.stores$),
-        tap(([{ state, storeName }, store]) => {
-          store[storeName]?.dispatchAction('monitor', (_) => state, false);
-        })
+        mergeMap((event) =>
+          iif(
+            () =>
+              event.type === 'DISPATCH' &&
+              event.payload.type === 'JUMP_TO_ACTION',
+            this.processDispatchEvents(event),
+            of(event)
+          )
+        )
       )
       .subscribe();
+  }
+
+  private processDispatchEvents(event: MonitorEvent) {
+    return of(event.state).pipe(
+      filter(Boolean),
+      map((state) => JSON.parse(state)),
+      map((state) => ({
+        storeName: Object.keys(state)[0],
+        state: Object.values(state)[0] as object,
+      })),
+      combineLatestWith(this.storeRegistry.stores$),
+      tap(([{ state, storeName }, store]) => {
+        store[storeName]?.dispatchAction('monitor', (_) => state, false);
+      })
+    );
   }
 
   private watchChangesOfStores(globalState: Record<string, object>) {

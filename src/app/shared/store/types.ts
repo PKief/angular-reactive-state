@@ -4,10 +4,12 @@ export type ReduxDevtoolsExtension = {
   connect: (config: EnhancerOptions) => ReduxDevTools;
 };
 
+type DispatchTypes = 'JUMP_TO_ACTION' | 'ROLLBACK';
+
 export type MonitorEvent =
   | {
       id: string;
-      payload: { type: 'JUMP_TO_ACTION'; actionId: number };
+      payload: { type: DispatchTypes; actionId: number };
       source: '@devtools-extension';
       state: string;
       type: 'DISPATCH';

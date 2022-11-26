@@ -11,8 +11,6 @@ export class StoreRegistryService {
   private registry$: BehaviorSubject<StoreRegistry> = new BehaviorSubject({});
   stores$: Observable<StoreRegistry> = this.registry$.asObservable();
 
-  constructor() {}
-
   addStore(name: string, storeInstance: Store<object>) {
     this.registry$.next({
       ...this.registry$.getValue(),
