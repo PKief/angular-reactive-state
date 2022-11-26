@@ -1,5 +1,8 @@
 <h1>{{ title }}</h1>
 
 {{ a$ | async }}
+{{ feature$ | async }}
 
 <button (click)="changeState()">Change State</button>
+
+{{ state | json }}
