@@ -35,7 +35,7 @@ export abstract class Store<State extends object> {
     this.actionSource = new Subject<Action<State>>();
     this.registryService.addStore(name, this as unknown as Store<object>);
 
-    this.actionSource.pipe(observeOn(queueScheduler)).subscribe((action) => {
+    this.actionSource.pipe(observeOn(queueScheduler)).subscribe(action => {
       const currentState = this.stateSource.getValue();
       const nextState = action.actionFn(currentState.state);
       this.stateSource.next({ state: nextState, latest: action.isLatest });
@@ -46,9 +46,9 @@ export abstract class Store<State extends object> {
     selector: (state: State) => SelectedState
   ): Observable<SelectedState> {
     return this.state$.pipe(
-      map((s) => s.state),
+      map(s => s.state),
       map(selector),
-      map((state) => structuredClone(state)),
+      map(state => structuredClone(state)),
       distinctUntilObjectChanged()
     );
   }
@@ -58,7 +58,7 @@ export abstract class Store<State extends object> {
   }
 
   changeProperty(prop: keyof State, value: State[typeof prop]) {
-    this.dispatchAction(`Change "${String(prop)}" in state`, (state) => ({
+    this.dispatchAction(`Change "${String(prop)}" in state`, state => ({
       ...state,
       [prop]: value,
     }));
@@ -73,6 +73,8 @@ export abstract class Store<State extends object> {
   }
 
   destroy() {
+    this.actionSource.complete();
+    this.stateSource.complete();
     this.registryService.deleteStore(this.name);
   }
 }
