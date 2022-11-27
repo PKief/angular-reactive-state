@@ -72,7 +72,7 @@ export class StoreDevTools {
       })),
       combineLatestWith(this.storeRegistry.stores$),
       tap(([{ state, storeName }, store]) => {
-        store[storeName]?.dispatchAction('monitor', (_) => state, false);
+        store[storeName]?.dispatchAction('monitor', () => state, false);
       })
     );
   }

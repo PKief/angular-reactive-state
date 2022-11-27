@@ -30,6 +30,15 @@
             "tsConfig": "lib/tsconfig.spec.json",
             "polyfills": ["zone.js", "zone.js/testing"]
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "lib/src/**/*.ts",
+              "lib/src/**/*.html"
+            ]
+          }
         }
       }
     },
@@ -95,6 +104,15 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "playground/**/*.ts",
+              "playground/**/*.html"
+            ]
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
