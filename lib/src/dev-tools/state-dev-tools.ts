@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { StoreRegistry } from 'angular-state/store-registry';
 import { EnhancerOptions } from 'redux-devtools-extension';
 import {
   combineLatestWith,
@@ -13,7 +14,6 @@ import {
 } from 'rxjs';
 import { MonitorEvent, ReduxDevTools } from '../types';
 import { distinctUntilObjectChanged } from '../utils';
-import { StoreRegistry } from './store-registry';
 
 @Injectable({
   providedIn: 'root',
