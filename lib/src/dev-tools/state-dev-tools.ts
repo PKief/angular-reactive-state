@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StoreRegistry } from 'angular-state/store-registry';
+import { StoreRegistry } from 'angular-state/store/store-registry';
 import { EnhancerOptions } from 'redux-devtools-extension';
 import {
   combineLatestWith,
@@ -12,8 +12,14 @@ import {
   Subject,
   tap,
 } from 'rxjs';
-import { MonitorEvent, ReduxDevTools } from '../types';
+import { MonitorEvent, ReduxDevTools, ReduxDevtoolsExtension } from '../types';
 import { distinctUntilObjectChanged } from '../utils';
+
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION__: ReduxDevtoolsExtension;
+  }
+}
 
 @Injectable({
   providedIn: 'root',
