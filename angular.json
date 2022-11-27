@@ -1,9 +1,39 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
+  "newProjectRoot": "./lib",
   "projects": {
-    "angular-store-concept": {
+    "state": {
+      "projectType": "library",
+      "root": "lib",
+      "sourceRoot": "lib/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "lib/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "lib/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "lib/tsconfig.spec.json",
+            "polyfills": ["zone.js", "zone.js/testing"]
+          }
+        }
+      }
+    },
+    "playground": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -11,27 +41,20 @@
         }
       },
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "playground",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-store-concept",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "outputPath": "dist/playground",
+            "index": "playground/index.html",
+            "main": "playground/main.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["playground/favicon.ico", "playground/assets"],
+            "styles": ["playground/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -65,10 +88,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "angular-store-concept:build:production"
+              "browserTarget": "playground:build:production"
             },
             "development": {
-              "browserTarget": "angular-store-concept:build:development"
+              "browserTarget": "playground:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,25 +99,17 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-store-concept:build"
+            "browserTarget": "playground:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["playground/favicon.ico", "playground/assets"],
+            "styles": ["playground/styles.scss"],
             "scripts": []
           }
         }

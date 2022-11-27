@@ -6,9 +6,9 @@
     "types": []
   },
   "files": [
-    "src/main.ts"
+    "playground/main.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "playground/**/*.d.ts"
   ]
 }
