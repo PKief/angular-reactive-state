@@ -3,6 +3,18 @@
   "description": "Reactive state management library for Angular",
   "version": "0.0.1",
   "publisher": "PKief",
+  "scripts": {
+    "ng": "ng",
+    "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:lib": "ng build state",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "lint": "ng lint",
+    "changelog": "changelog-machine --config changelog.config.json",
+    "version": "npm run changelog && git add CHANGELOG.md"
+  },
   "author": {
     "name": "Philipp Kief",
     "email": "philipp.kief@gmx.de",
@@ -12,6 +24,7 @@
   "sponsor": {
     "url": "https://github.com/sponsors/PKief"
   },
+  
   "keywords": [
     "Angular",
     "State-Management",
@@ -26,16 +39,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PKief/angular-state.git"
-  },
-  "scripts": {
-    "ng": "ng",
-    "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
-    "start": "ng serve",
-    "build": "ng build",
-    "build:lib": "ng build state",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "lint": "ng lint"
   },
   "dependencies": {
     "@angular/animations": "^15.0.0",
@@ -65,6 +68,7 @@
     "@types/lodash.isequal": "^4.5.6",
     "@typescript-eslint/eslint-plugin": "5.44.0",
     "@typescript-eslint/parser": "5.44.0",
+    "changelog-machine": "^1.0.2",
     "eslint": "^8.28.0",
     "jasmine-core": "~4.5.0",
     "karma": "~6.4.0",
