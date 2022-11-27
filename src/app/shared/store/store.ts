@@ -42,7 +42,9 @@ export abstract class Store<State extends object> {
     });
   }
 
-  select<TX>(selector: (state: State) => TX): Observable<TX> {
+  select<SelectedState>(
+    selector: (state: State) => SelectedState
+  ): Observable<SelectedState> {
     return this.state$.pipe(
       map((s) => s.state),
       map(selector),
