@@ -137,7 +137,7 @@ this.todoStore.dispatchAction('Add todo', state => {
 In combination with the `snapshot` functionality it would also be possible to update the state like this:
 
 ```ts
-// manipulate the store by using latest values from snaphot
+// manipulate the store by using latest values from snapshot
 this.todoStore.changeProperty('todos', [
   ...this.todoStore.snapshot.todos,
   'new todo',
