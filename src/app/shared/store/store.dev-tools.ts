@@ -12,7 +12,7 @@ import {
   tap,
 } from 'rxjs';
 import { distinctUntilObjectChanged } from '../utils';
-import { StoreRegistryService } from './store-registry.service';
+import { StoreRegistry } from './store-registry';
 import { MonitorEvent, ReduxDevTools } from './types';
 
 @Injectable({
@@ -22,7 +22,7 @@ export class StoreDevTools {
   private devTools: ReduxDevTools | undefined;
   private dispatchEvents$ = new Subject<MonitorEvent>();
 
-  constructor(private storeRegistry: StoreRegistryService) {}
+  constructor(private storeRegistry: StoreRegistry) {}
 
   init() {
     if (!window.__REDUX_DEVTOOLS_EXTENSION__) return;

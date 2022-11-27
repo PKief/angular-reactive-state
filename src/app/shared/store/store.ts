@@ -8,7 +8,7 @@ import {
   Subject,
 } from 'rxjs';
 import { distinctUntilObjectChanged } from '../utils/distinctUntilObjectChanged';
-import { StoreRegistryService } from './store-registry.service';
+import { StoreRegistry } from './store-registry';
 
 interface Action<State extends object> {
   name: string;
@@ -22,7 +22,7 @@ export abstract class Store<State extends object> {
     state: State;
     latest: boolean;
   }>;
-  private readonly registryService = inject(StoreRegistryService);
+  private readonly registryService = inject(StoreRegistry);
 
   readonly state$: Observable<{ state: State; latest: boolean }>;
 

@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Store } from './store';
 
-export type StoreRegistry = Record<string, Store<object>>;
+export type Registry = Record<string, Store<object>>;
 
 @Injectable({
   providedIn: 'root',
 })
-export class StoreRegistryService {
-  private registry$: BehaviorSubject<StoreRegistry> = new BehaviorSubject({});
-  stores$: Observable<StoreRegistry> = this.registry$.asObservable();
+export class StoreRegistry {
+  private registry$: BehaviorSubject<Registry> = new BehaviorSubject({});
+  stores$: Observable<Registry> = this.registry$.asObservable();
 
   addStore(name: string, storeInstance: Store<object>) {
     this.registry$.next({
