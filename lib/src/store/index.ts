@@ -1,2 +1,2 @@
+export * from './state-dev-tools.module';
 export * from './store';
-export * from './dev-tools.module';

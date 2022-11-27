@@ -11,14 +11,14 @@ import {
   Subject,
   tap,
 } from 'rxjs';
+import { MonitorEvent, ReduxDevTools } from '../types';
 import { distinctUntilObjectChanged } from '../utils';
 import { StoreRegistry } from './store-registry';
-import { MonitorEvent, ReduxDevTools } from './types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class StoreDevTools {
+export class StateDevTools {
   private devTools: ReduxDevTools | undefined;
   private dispatchEvents$ = new Subject<MonitorEvent>();
 
@@ -35,8 +35,8 @@ export class StoreDevTools {
 
     this.devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect(config);
     const globalState: Record<string, object> = {};
-    this.devTools.init(globalState);
-    this.devTools.subscribe((event: MonitorEvent) => {
+    this.devTools?.init(globalState);
+    this.devTools?.subscribe((event: MonitorEvent) => {
       if (event.type === 'DISPATCH') {
         this.dispatchEvents$.next(event);
       }
@@ -49,7 +49,7 @@ export class StoreDevTools {
   private watchChangesOfMonitor() {
     this.dispatchEvents$
       .pipe(
-        mergeMap((event) =>
+        mergeMap(event =>
           iif(
             () =>
               event.type === 'DISPATCH' &&
@@ -65,8 +65,8 @@ export class StoreDevTools {
   private processDispatchEvents(event: MonitorEvent) {
     return of(event.state).pipe(
       filter(Boolean),
-      map((state) => JSON.parse(state)),
-      map((state) => ({
+      map(state => JSON.parse(state)),
+      map(state => ({
         storeName: Object.keys(state)[0],
         state: Object.values(state)[0] as object,
       })),
@@ -80,12 +80,12 @@ export class StoreDevTools {
   private watchChangesOfStores(globalState: Record<string, object>) {
     this.storeRegistry.stores$
       .pipe(
-        mergeMap((stores) =>
+        mergeMap(stores =>
           from(Object.keys(stores)).pipe(
-            mergeMap((key) =>
+            mergeMap(key =>
               stores[key].state$.pipe(
-                filter((s) => s.latest),
-                map((state) => {
+                filter(s => s.latest),
+                map(state => {
                   return { name: key, state: state.state };
                 })
               )

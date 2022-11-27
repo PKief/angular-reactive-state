@@ -34,10 +34,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "lib/src/**/*.ts",
-              "lib/src/**/*.html"
-            ]
+            "lintFilePatterns": ["lib/src/**/*.ts", "lib/src/**/*.html"]
           }
         }
       }
@@ -64,7 +61,8 @@
             "inlineStyleLanguage": "scss",
             "assets": ["playground/favicon.ico", "playground/assets"],
             "styles": ["playground/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["lodash"]
           },
           "configurations": {
             "production": {
@@ -108,10 +106,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "playground/**/*.ts",
-              "playground/**/*.html"
-            ]
+            "lintFilePatterns": ["playground/**/*.ts", "playground/**/*.html"]
           }
         },
         "extract-i18n": {
