@@ -117,16 +117,16 @@ console.log(this.todoStore.snapshot.todos); // output: ['my todo']
 There are two possibilities to update the state in the store:
 
 - update a root-level property of the state
-- manipulate a specific part of the state
+- update the whole state at once
 
 #### Example
 
 ```ts
 // replace a root-level property of the state with a new value
-this.todoStore.changeProperty('todos', ['my first todo']);
+this.todoStore.updateProperty('todos', ['my first todo']);
 
-// manipulate a specific part of the state
-this.todoStore.dispatchAction('Add todo', state => {
+// update the whole state at once
+this.todoStore.update(state => {
   return {
     ...state,
     todos: [...state.todos, 'my first todo'],
@@ -138,7 +138,7 @@ In combination with the `snapshot` functionality it would also be possible to up
 
 ```ts
 // manipulate the store by using latest values from snapshot
-this.todoStore.changeProperty('todos', [
+this.todoStore.updateProperty('todos', [
   ...this.todoStore.snapshot.todos,
   'new todo',
 ]);
