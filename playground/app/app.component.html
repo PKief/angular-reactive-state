@@ -1,6 +1,37 @@
-<h1>{{ title }}</h1>
+<h1>Angular State</h1>
+<h2>Playground</h2>
 
-<p>a{{ a$ | async }}</p>
-<p>feature{{ feature$ | async }}</p>
+<h3>Todos</h3>
 
-<button (click)="changeState()">Change State</button>
+<input
+  type="text"
+  placeholder="New Todo"
+  #todoInput
+  (keydown.enter)="addTodo(todoInput.value); todoInput.value = ''"
+/>
+
+<ng-container *ngIf="uncompletedTodos$ | async; let todos">
+  <h4 *ngIf="todos.length > 0">Open</h4>
+
+  <ul>
+    <li *ngFor="let todo of uncompletedTodos$ | async">
+      <div>
+        <span>{{ todo.description }}</span>
+        <button (click)="completeTodo(todo)">Complete</button>
+      </div>
+    </li>
+  </ul>
+</ng-container>
+
+<ng-container *ngIf="completedTodos$ | async; let todos">
+  <h4 *ngIf="todos.length > 0">Completed</h4>
+
+  <ul>
+    <li *ngFor="let todo of todos">
+      <div>
+        <span>{{ todo.description }}</span>
+        <button (click)="uncompleteTodo(todo)">Uncomplete</button>
+      </div>
+    </li>
+  </ul>
+</ng-container>

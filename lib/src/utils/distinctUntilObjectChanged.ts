@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { Observable, distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, Observable } from 'rxjs';
 
 export const distinctUntilObjectChanged = () => {
   return <T>(source: Observable<T>): Observable<T> =>

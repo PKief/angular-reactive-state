@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { AppstoreService } from './services/appstore.service';
-import { FeaturestoreService } from './services/featurestore.service';
+import { map, Observable } from 'rxjs';
+import { Todo, TodoStoreService } from './services/todo-store.service';
 
 @Component({
   selector: 'app-root',
@@ -10,29 +9,28 @@ import { FeaturestoreService } from './services/featurestore.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  title = 'angular-store-concept';
-  readonly a$: Observable<string>;
-  readonly feature$: Observable<string>;
-  a: string | undefined;
+  readonly completedTodos$: Observable<Todo[]>;
+  readonly uncompletedTodos$: Observable<Todo[]>;
 
-  constructor(
-    private store: AppstoreService,
-    private featureStore: FeaturestoreService
-  ) {
-    this.a$ = store.select(state => state.a);
-    this.feature$ = featureStore.select(state => state.b);
-    this.store.updateProperty('a', 'b');
-    this.featureStore.updateProperty('b', 'feature');
+  constructor(private todoStore: TodoStoreService) {
+    const allTodos$ = this.todoStore.select(state => state.todos);
+    this.completedTodos$ = allTodos$.pipe(
+      map(todos => todos.filter(t => !!t.completed))
+    );
+    this.uncompletedTodos$ = allTodos$.pipe(
+      map(todos => todos.filter(t => !t.completed))
+    );
   }
 
-  changeState() {
-    // this.store.updateProperty('a', Math.random().toString());
-    this.featureStore.updateProperty('b', Math.random().toString());
-    this.store.update(state => {
-      return {
-        ...state,
-        a: Math.random().toString(),
-      };
-    });
+  addTodo(description: string) {
+    this.todoStore.addTodo(description);
+  }
+
+  completeTodo(todo: Todo) {
+    this.todoStore.completeTodo(todo);
+  }
+
+  uncompleteTodo(todo: Todo) {
+    this.todoStore.uncompleteTodo(todo);
   }
 }
