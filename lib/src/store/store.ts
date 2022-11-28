@@ -10,35 +10,25 @@ import {
 import { distinctUntilObjectChanged } from '../utils/distinctUntilObjectChanged';
 import { StoreRegistry } from './store-registry';
 
-interface Action<State extends object> {
-  name: string;
-  actionFn: (state: State) => State;
-  isLatest: boolean;
-}
+type Action<State extends object> = (state: State) => State;
 
 export abstract class Store<State extends object> {
   private readonly actionSource: Subject<Action<State>>;
-  private readonly stateSource: BehaviorSubject<{
-    state: State;
-    latest: boolean;
-  }>;
+  private readonly stateSource: BehaviorSubject<State>;
   private readonly registryService = inject(StoreRegistry);
 
-  readonly state$: Observable<{ state: State; latest: boolean }>;
+  readonly state$: Observable<State>;
 
   constructor(private name: string, initialState: State) {
-    this.stateSource = new BehaviorSubject<{ state: State; latest: boolean }>({
-      state: initialState,
-      latest: true,
-    });
+    this.stateSource = new BehaviorSubject<State>(initialState);
     this.state$ = this.stateSource.asObservable();
     this.actionSource = new Subject<Action<State>>();
     this.registryService.addStore(name, this as unknown as Store<object>);
 
     this.actionSource.pipe(observeOn(queueScheduler)).subscribe(action => {
       const currentState = this.stateSource.getValue();
-      const nextState = action.actionFn(currentState.state);
-      this.stateSource.next({ state: nextState, latest: action.isLatest });
+      const nextState = action(currentState);
+      this.stateSource.next(nextState);
     });
   }
 
@@ -46,7 +36,6 @@ export abstract class Store<State extends object> {
     selector: (state: State) => SelectedState
   ): Observable<SelectedState> {
     return this.state$.pipe(
-      map(s => s.state),
       map(selector),
       map(state => structuredClone(state)),
       distinctUntilObjectChanged()
@@ -54,22 +43,18 @@ export abstract class Store<State extends object> {
   }
 
   get snapshot() {
-    return this.stateSource.getValue().state;
+    return this.stateSource.getValue();
   }
 
-  changeProperty(prop: keyof State, value: State[typeof prop]) {
-    this.dispatchAction(`Change "${String(prop)}" in state`, state => ({
+  updateProperty(prop: keyof State, value: State[typeof prop]) {
+    this.update(state => ({
       ...state,
       [prop]: value,
     }));
   }
 
-  dispatchAction(
-    actionName: string,
-    actionFn: (state: State) => State,
-    isLatest = true
-  ) {
-    this.actionSource.next({ name: actionName, actionFn, isLatest });
+  update(stateChanger: (state: State) => State) {
+    this.actionSource.next(stateChanger);
   }
 
   destroy() {

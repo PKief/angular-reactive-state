@@ -1,7 +1,6 @@
 <h1>{{ title }}</h1>
 
-{{ a$ | async }}
-{{ feature$ | async }}
+<p>a{{ a$ | async }}</p>
+<p>feature{{ feature$ | async }}</p>
 
 <button (click)="changeState()">Change State</button>
-

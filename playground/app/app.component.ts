@@ -21,14 +21,14 @@ export class AppComponent {
   ) {
     this.a$ = store.select(state => state.a);
     this.feature$ = featureStore.select(state => state.b);
-    this.store.changeProperty('a', 'b');
-    this.featureStore.changeProperty('b', 'feature');
+    this.store.updateProperty('a', 'b');
+    this.featureStore.updateProperty('b', 'feature');
   }
 
   changeState() {
-    // this.store.changeProperty('a', Math.random().toString());
-    // this.featureStore.changeProperty('b', Math.random().toString());
-    this.store.dispatchAction('monitor', state => {
+    // this.store.updateProperty('a', Math.random().toString());
+    this.featureStore.updateProperty('b', Math.random().toString());
+    this.store.update(state => {
       return {
         ...state,
         a: Math.random().toString(),

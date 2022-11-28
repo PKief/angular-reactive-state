@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { StoreRegistry } from 'angular-state/store/store-registry';
 import { EnhancerOptions } from 'redux-devtools-extension';
 import {
-  combineLatestWith,
   filter,
   from,
   iif,
@@ -11,9 +10,14 @@ import {
   of,
   Subject,
   tap,
+  withLatestFrom,
 } from 'rxjs';
 import { MonitorEvent, ReduxDevTools, ReduxDevtoolsExtension } from '../types';
 import { distinctUntilObjectChanged } from '../utils';
+
+type DevToolsStateChange = {
+  __REDUX_DEVTOOLS_EXTENSION__: boolean;
+};
 
 declare global {
   interface Window {
@@ -72,13 +76,18 @@ export class StateDevTools {
     return of(event.state).pipe(
       filter(Boolean),
       map(state => JSON.parse(state)),
-      map(state => ({
-        storeName: Object.keys(state)[0],
-        state: Object.values(state)[0] as object,
+      mergeMap(state => from(Object.entries(state))),
+      map(([storeName, state]) => ({
+        storeName,
+        state,
       })),
-      combineLatestWith(this.storeRegistry.stores$),
+      withLatestFrom(this.storeRegistry.stores$),
       tap(([{ state, storeName }, store]) => {
-        store[storeName]?.dispatchAction('monitor', () => state, false);
+        // mark state change as dev tool state change
+        if (state) {
+          (state as DevToolsStateChange).__REDUX_DEVTOOLS_EXTENSION__ = true;
+          store[storeName]?.update(() => state);
+        }
       })
     );
   }
@@ -90,9 +99,12 @@ export class StateDevTools {
           from(Object.keys(stores)).pipe(
             mergeMap(key =>
               stores[key].state$.pipe(
-                filter(s => s.latest),
+                filter(
+                  // filter out state changes of dev tool
+                  s => !(s as DevToolsStateChange).__REDUX_DEVTOOLS_EXTENSION__
+                ),
                 map(state => {
-                  return { name: key, state: state.state };
+                  return { name: key, state: state };
                 })
               )
             )
