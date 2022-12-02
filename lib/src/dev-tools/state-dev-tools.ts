@@ -13,11 +13,6 @@ import {
   withLatestFrom,
 } from 'rxjs';
 import { MonitorEvent, ReduxDevTools, ReduxDevtoolsExtension } from '../types';
-import { distinctUntilObjectChanged } from '../utils';
-
-type DevToolsStateChange = {
-  __REDUX_DEVTOOLS_EXTENSION__: boolean;
-};
 
 declare global {
   interface Window {
@@ -31,6 +26,7 @@ declare global {
 export class StateDevTools {
   private devTools: ReduxDevTools | undefined;
   private dispatchEvents$ = new Subject<MonitorEvent>();
+  private stateHistory: object[] = [];
 
   constructor(private storeRegistry: StoreRegistry) {}
 
@@ -83,9 +79,8 @@ export class StateDevTools {
       })),
       withLatestFrom(this.storeRegistry.stores$),
       tap(([{ state, storeName }, store]) => {
-        // mark state change as dev tool state change
         if (state) {
-          (state as DevToolsStateChange).__REDUX_DEVTOOLS_EXTENSION__ = true;
+          this.stateHistory.push(state);
           store[storeName]?.update(() => state);
         }
       })
@@ -101,7 +96,16 @@ export class StateDevTools {
               stores[key].state$.pipe(
                 filter(
                   // filter out state changes of dev tool
-                  s => !(s as DevToolsStateChange).__REDUX_DEVTOOLS_EXTENSION__
+                  s => {
+                    const devToolStateIndex = this.stateHistory.findIndex(
+                      historyState => Object.is(historyState, s)
+                    );
+                    if (devToolStateIndex > -1) {
+                      this.stateHistory.splice(devToolStateIndex, 1);
+                      return false;
+                    }
+                    return true;
+                  }
                 ),
                 map(state => {
                   return { name: key, state: state };
@@ -110,7 +114,6 @@ export class StateDevTools {
             )
           )
         ),
-        distinctUntilObjectChanged(),
         tap(({ name, state }) => {
           globalState[name] = state;
           this.changeState(name, globalState);
