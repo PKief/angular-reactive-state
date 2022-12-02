@@ -111,7 +111,7 @@ export class StateDevTools {
           from(Object.keys(stores)).pipe(
             mergeMap(key =>
               stores[key].state$.pipe(
-                filter(this.isStateUnprocessed),
+                filter(this.isStateUnprocessed.bind(this)),
                 map(state => {
                   return { name: key, state: state };
                 })
