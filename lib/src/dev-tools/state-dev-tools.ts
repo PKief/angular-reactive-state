@@ -25,11 +25,15 @@ declare global {
 })
 export class StateDevTools {
   private devTools: ReduxDevTools | undefined;
-  private dispatchEvents$ = new Subject<MonitorEvent>();
-  private stateHistory: object[] = [];
+  private readonly dispatchEvents$ = new Subject<MonitorEvent>();
+  private readonly stateHistory: object[] = [];
+  private readonly globalState: Record<string, object> = {};
 
   constructor(private storeRegistry: StoreRegistry) {}
 
+  /**
+   * Initialize the dev tools which can be used to monitor state changes of the stores.
+   */
   init() {
     if (!window.__REDUX_DEVTOOLS_EXTENSION__) return;
 
@@ -40,18 +44,20 @@ export class StateDevTools {
     };
 
     this.devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect(config);
-    const globalState: Record<string, object> = {};
-    this.devTools?.init(globalState);
+    this.devTools?.init(this.globalState);
     this.devTools?.subscribe((event: MonitorEvent) => {
       if (event.type === 'DISPATCH') {
         this.dispatchEvents$.next(event);
       }
     });
 
-    this.watchChangesOfStores(globalState);
+    this.watchChangesOfStores();
     this.watchChangesOfMonitor();
   }
 
+  /**
+   * Watch all changes which are coming from the monitor of the dev tools extension.
+   */
   private watchChangesOfMonitor() {
     this.dispatchEvents$
       .pipe(
@@ -68,6 +74,13 @@ export class StateDevTools {
       .subscribe();
   }
 
+  /**
+   * Observes all dispatch events from the devtools extension and
+   * updates the respective store with the state which should be replayed.
+   *
+   * @param event Dispatch event from devtools extension
+   * @returns
+   */
   private processDispatchEvents(event: MonitorEvent) {
     return of(event.state).pipe(
       filter(Boolean),
@@ -80,6 +93,7 @@ export class StateDevTools {
       withLatestFrom(this.storeRegistry.stores$),
       tap(([{ state, storeName }, store]) => {
         if (state) {
+          // Temporarily save reference in history
           this.stateHistory.push(state);
           store[storeName]?.update(() => state);
         }
@@ -87,26 +101,17 @@ export class StateDevTools {
     );
   }
 
-  private watchChangesOfStores(globalState: Record<string, object>) {
+  /**
+   * Watches all state changes which are coming from all stores.
+   */
+  private watchChangesOfStores() {
     this.storeRegistry.stores$
       .pipe(
         mergeMap(stores =>
           from(Object.keys(stores)).pipe(
             mergeMap(key =>
               stores[key].state$.pipe(
-                filter(
-                  // filter out state changes of dev tool
-                  s => {
-                    const devToolStateIndex = this.stateHistory.findIndex(
-                      historyState => Object.is(historyState, s)
-                    );
-                    if (devToolStateIndex > -1) {
-                      this.stateHistory.splice(devToolStateIndex, 1);
-                      return false;
-                    }
-                    return true;
-                  }
-                ),
+                filter(this.isStateUnprocessed),
                 map(state => {
                   return { name: key, state: state };
                 })
@@ -115,11 +120,29 @@ export class StateDevTools {
           )
         ),
         tap(({ name, state }) => {
-          globalState[name] = state;
-          this.changeState(name, globalState);
+          this.globalState[name] = state;
+          this.changeState(name, this.globalState);
         })
       )
       .subscribe();
+  }
+
+  /**
+   * If the devtools replay some of the old states by time traveling then the references are stored inside of the devtools' state history.
+   * Based on the object references the devtools recognize if the state was already processed or if it's a new state change.
+   *
+   * @param emittedStateFromStore
+   * @returns True if state is new to the devtools and false if the state was already processed
+   */
+  private isStateUnprocessed(emittedStateFromStore: object) {
+    const devToolStateIndex = this.stateHistory.findIndex(historyState =>
+      Object.is(historyState, emittedStateFromStore)
+    );
+    if (devToolStateIndex > -1) {
+      this.stateHistory.splice(devToolStateIndex, 1);
+      return false;
+    }
+    return true;
   }
 
   private changeState(action: string, stateValue: object) {
