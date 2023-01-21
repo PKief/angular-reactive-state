@@ -2,7 +2,7 @@
   <br>
     <img src="https://github.com/PKief/angular-reactive-state/raw/main/logo.png" alt="logo" width="200">
   <br><br>
-  Angular State
+  Angular Reactive State
   <br>
   <br>
 </h1>
