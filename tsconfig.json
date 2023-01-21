@@ -19,7 +19,7 @@
     "importHelpers": true,
     "target": "ES2022",
     "paths": {
-      "angular-state/*": ["./lib/src/*"]
+      "angular-reactive-state/*": ["./lib/src/*"]
     },
     "module": "ES2022",
     "useDefineForClassFields": false,

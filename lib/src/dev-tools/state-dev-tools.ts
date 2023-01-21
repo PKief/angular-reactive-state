@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StoreRegistry } from 'angular-state/store/store-registry';
+import { StoreRegistry } from 'angular-reactive-state/store/store-registry';
 import { EnhancerOptions } from 'redux-devtools-extension';
 import {
   filter,

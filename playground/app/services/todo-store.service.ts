@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Store } from 'angular-state/public-api';
+import { Store } from 'angular-reactive-state/public-api';
 
 export type Todo = {
   id: string;

@@ -1,4 +1,4 @@
 {
-  "repositoryUrl": "https://github.com/PKief/angular-state",
+  "repositoryUrl": "https://github.com/PKief/angular-reactive-state",
   "blacklistPattern": "^Release \\d+\\.\\d+\\.\\d+|^\\d+\\.\\d+\\.\\d+$"
 }

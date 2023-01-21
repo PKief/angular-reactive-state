@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-    <img src="https://github.com/PKief/angular-state/raw/main/logo.png" alt="logo" width="200">
+    <img src="https://github.com/PKief/angular-reactive-state/raw/main/logo.png" alt="logo" width="200">
   <br><br>
   Angular State
   <br>
@@ -22,13 +22,13 @@
 NPM
 
 ```
-npm i angular-state
+npm i angular-reactive-state
 ```
 
 Yarn
 
 ```
-yarn add angular-state
+yarn add angular-reactive-state
 ```
 
 ### Create a store
@@ -52,7 +52,7 @@ Now we follow these steps to transform the generated into a reactive store:
 ```ts
 // todo-store.service.ts
 import { Injectable } from '@angular/core';
-import { Store } from 'angular-state';
+import { Store } from 'angular-reactive-state';
 
 type TodoStoreState = {
   todos: string[];

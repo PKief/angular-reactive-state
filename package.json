@@ -1,5 +1,5 @@
 {
-  "name": "angular-state-playground",
+  "name": "angular-reactive-state-playground",
   "description": "Reactive state management library for Angular",
   "version": "0.0.1",
   "publisher": "PKief",
@@ -33,12 +33,12 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/PKief/angular-state/issues"
+    "url": "https://github.com/PKief/angular-reactive-state/issues"
   },
-  "homepage": "https://github.com/PKief/angular-state/blob/main/README.md",
+  "homepage": "https://github.com/PKief/angular-reactive-state/blob/main/README.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PKief/angular-state.git"
+    "url": "git+https://github.com/PKief/angular-reactive-state.git"
   },
   "dependencies": {
     "@angular/animations": "^15.0.0",
