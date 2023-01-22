@@ -1,7 +1,5 @@
-import { EnhancerOptions } from 'redux-devtools-extension';
-
 export type ReduxDevtoolsExtension = {
-  connect: (config: EnhancerOptions) => ReduxDevTools;
+  connect: (config: unknown) => ReduxDevTools;
 };
 
 type DispatchTypes = 'JUMP_TO_ACTION' | 'ROLLBACK';
