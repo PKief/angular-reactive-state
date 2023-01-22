@@ -16,6 +16,7 @@ const distPackageJson = JSON.parse(distPackageJsonInput);
 
 const propertiesToCopy = [
   'name',
+  'version',
   'displayName',
   'description',
   'author',
