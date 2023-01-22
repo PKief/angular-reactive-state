@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["jest"]
+    "types": ["node", "jest"]
   },
   "include": ["playground/**/*.spec.ts", "playground/**/*.d.ts"],
   "paths": {
