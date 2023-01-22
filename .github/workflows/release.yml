@@ -40,7 +40,6 @@ jobs:
         run: npm run build:lib && npm run prepare:lib
       - name: Get meta data 🔍
         run: |
-          cd dist/state
           NODE_VERSION=$(node -p -e "require('./package.json').version")
           echo VERSION=$NODE_VERSION >> $GITHUB_ENV
           NODE_NAME=$(node -p -e "require('./package.json').name")
@@ -56,8 +55,6 @@ jobs:
           name: ${{ env.DISPLAY_NAME }} v${{ env.VERSION }}
           generate_release_notes: true
       - name: Publish to NPM Registry 🚀
-        run: |
-          cd dist/state
-          npm publish
+        run: cd dist/state && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
