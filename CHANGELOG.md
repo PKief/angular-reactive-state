@@ -3,6 +3,13 @@
  All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
  
+#### [v1.0.7](https://github.com/PKief/angular-reactive-state/compare/v1.0.6...v1.0.7) 
+
+> January 22, 2023 
+
+- Update import path [`cf76c16`](https://github.com/PKief/angular-reactive-state/commit/cf76c16)
+- Add missing peer dependency [`355af24`](https://github.com/PKief/angular-reactive-state/commit/355af24)
+ 
 #### [v1.0.6](https://github.com/PKief/angular-reactive-state/compare/v1.0.5...v1.0.6) 
 
 > January 22, 2023 
