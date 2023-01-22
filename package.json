@@ -2,7 +2,7 @@
   "name": "angular-reactive-state",
   "description": "Reactive state management library for Angular",
   "displayName": "Angular Reactive State Management",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "publisher": "PKief",
   "scripts": {
     "ng": "ng",
