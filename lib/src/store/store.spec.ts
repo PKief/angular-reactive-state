@@ -19,6 +19,14 @@ class TestStore extends Store<TestStoreState> {
   }
 }
 
+Object.defineProperty(global, 'structuredClone', {
+  writable: true,
+  configurable: true,
+  value: (value: unknown) => {
+    return JSON.parse(JSON.stringify(value));
+  },
+});
+
 describe('Store', () => {
   let store: TestStore;
 
