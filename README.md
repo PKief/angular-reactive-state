@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-    <img src="https://github.com/PKief/angular-reactive-state/raw/main/logo.png" alt="logo" width="200">
+    <img src="https://raw.githubusercontent.com/PKief/angular-reactive-state/main/logo.png" alt="logo" width="200">
   <br><br>
   Angular Reactive State
   <br>
