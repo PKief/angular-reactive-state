@@ -1,6 +1,7 @@
 {
   "name": "angular-reactive-state-playground",
   "description": "Reactive state management library for Angular",
+  "displayName": "Angular Reactive State Management",
   "version": "0.0.1",
   "publisher": "PKief",
   "scripts": {
@@ -40,6 +41,11 @@
     "type": "git",
     "url": "git+https://github.com/PKief/angular-reactive-state.git"
   },
+  "files": [
+    "dist/state",
+    "LICENSE.md",
+    "README.md"
+  ],
   "dependencies": {
     "@angular/animations": "^15.0.0",
     "@angular/common": "^15.0.0",
