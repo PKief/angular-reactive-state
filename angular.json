@@ -60,8 +60,7 @@
             "inlineStyleLanguage": "scss",
             "assets": ["playground/favicon.ico", "playground/assets"],
             "styles": ["playground/styles.scss"],
-            "scripts": [],
-            "allowedCommonJsDependencies": ["lodash"]
+            "scripts": []
           },
           "configurations": {
             "production": {
