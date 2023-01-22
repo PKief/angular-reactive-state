@@ -82,7 +82,6 @@
     "jest-preset-angular": "^12.2.5",
     "ng-packagr": "^15.0.0",
     "prettier": "latest",
-    "redux-devtools-extension": "^2.13.9",
     "tslint-config-prettier": "latest",
     "typescript": "~4.8.2"
   }

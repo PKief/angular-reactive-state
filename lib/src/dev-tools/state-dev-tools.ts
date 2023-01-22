@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { StoreRegistry } from 'angular-reactive-state/store/store-registry';
-import { EnhancerOptions } from 'redux-devtools-extension';
 import {
   filter,
   from,
@@ -37,7 +36,7 @@ export class StateDevTools {
   init() {
     if (!window.__REDUX_DEVTOOLS_EXTENSION__) return;
 
-    const config: EnhancerOptions = {
+    const config = {
       features: { pause: true, export: true, test: true, jump: true },
       trace: true,
       traceLimit: 25,
