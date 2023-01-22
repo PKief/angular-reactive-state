@@ -3,6 +3,13 @@
  All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
  
+#### [v1.0.6](https://github.com/PKief/angular-reactive-state/compare/v1.0.5...v1.0.6) 
+
+> January 22, 2023 
+
+- Export store registry [`fce52ec`](https://github.com/PKief/angular-reactive-state/commit/fce52ec)
+- Replace lodash with lodash-es [`f950bc7`](https://github.com/PKief/angular-reactive-state/commit/f950bc7)
+ 
 #### [v1.0.5](https://github.com/PKief/angular-reactive-state/compare/v1.0.4...v1.0.5) 
 
 > January 22, 2023 
