@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { StoreRegistry } from 'angular-reactive-state/store/store-registry';
 import {
   filter,
   from,
@@ -11,6 +10,7 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs';
+import { StoreRegistry } from '../store/store-registry';
 import { MonitorEvent, ReduxDevTools, ReduxDevtoolsExtension } from '../types';
 
 declare global {
