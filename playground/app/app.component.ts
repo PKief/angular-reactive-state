@@ -1,5 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Signal,
+  computed,
+} from '@angular/core';
 import { Todo, TodoStoreService } from './services/todo-store.service';
 
 @Component({
@@ -9,16 +13,17 @@ import { Todo, TodoStoreService } from './services/todo-store.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  readonly completedTodos$: Observable<Todo[]>;
-  readonly uncompletedTodos$: Observable<Todo[]>;
+  readonly completedTodos$: Signal<Todo[]>;
+  readonly uncompletedTodos$: Signal<Todo[]>;
 
   constructor(private todoStore: TodoStoreService) {
-    const allTodos$ = this.todoStore.select(state => state.todos);
-    this.completedTodos$ = allTodos$.pipe(
-      map(todos => todos.filter(t => !!t.completed))
+    const allTodos$ = this.todoStore.selectAsSignal(state => state.todos);
+
+    this.completedTodos$ = computed(() =>
+      allTodos$()?.filter(t => t.completed)
     );
-    this.uncompletedTodos$ = allTodos$.pipe(
-      map(todos => todos.filter(t => !t.completed))
+    this.uncompletedTodos$ = computed(() =>
+      allTodos$()?.filter(t => !t.completed)
     );
   }
 
