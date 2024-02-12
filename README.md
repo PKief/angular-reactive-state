@@ -101,6 +101,15 @@ this.todoStore
 
 The `select` method will only trigger an event if the value of the specific property of the state has been changed. In addition the returned values are deep copies of the values in the store, so it is can't cause any reference issues.
 
+### Usage with signals
+
+Since Angular 17, [Signals](https://angular.io/guide/signals#angular-signals) can be used instead of Observables. To achieve this, the function `selectAsSignal` can be used:
+
+```ts
+// get a signal of a specific part of the state
+const myTodos = this.todoStore.selectAsSignal(state => state.todos);
+```
+
 ### Get state snapshot
 
 Some operations only require the current state of the store and do not need to get notified about changes. These are cases where a snapshot of the latest state can be very helpful.

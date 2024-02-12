@@ -1,4 +1,5 @@
-import { inject } from '@angular/core';
+import { inject, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
   map,
@@ -19,7 +20,10 @@ export abstract class Store<State extends object> {
 
   readonly state$: Observable<State>;
 
-  constructor(private name: string, initialState: State) {
+  constructor(
+    private name: string,
+    initialState: State
+  ) {
     this.stateSource = new BehaviorSubject<State>(initialState);
     this.state$ = this.stateSource.asObservable();
     this.actionSource = new Subject<Action<State>>();
@@ -40,6 +44,14 @@ export abstract class Store<State extends object> {
       map(state => structuredClone(state)),
       distinctUntilObjectChanged()
     );
+  }
+
+  selectAsSignal<SelectedState>(
+    selector: (state: State) => SelectedState
+  ): Signal<SelectedState> {
+    return toSignal(this.select(selector), {
+      initialValue: selector(this.snapshot),
+    });
   }
 
   get snapshot() {
