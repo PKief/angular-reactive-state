@@ -3,6 +3,25 @@
  All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
  
+#### [v2.0.0](https://github.com/PKief/angular-reactive-state/compare/v1.0.8...v2.0.0) 
+
+> February 12, 2024 
+
+- Update angular.json [`92b1284`](https://github.com/PKief/angular-reactive-state/commit/92b1284)
+- Fix test suite [`24c983a`](https://github.com/PKief/angular-reactive-state/commit/24c983a)
+- Update test [`54889c1`](https://github.com/PKief/angular-reactive-state/commit/54889c1)
+- Update Readme [`15a0f04`](https://github.com/PKief/angular-reactive-state/commit/15a0f04)
+- Update devtool support [`f08f3e1`](https://github.com/PKief/angular-reactive-state/commit/f08f3e1)
+- Simplify playground [`957eff8`](https://github.com/PKief/angular-reactive-state/commit/957eff8)
+- Update playground [`a8f9310`](https://github.com/PKief/angular-reactive-state/commit/a8f9310)
+- Add signals [`17d6f3a`](https://github.com/PKief/angular-reactive-state/commit/17d6f3a)
+- Disable analytics [`985fabb`](https://github.com/PKief/angular-reactive-state/commit/985fabb)
+- Update to Angular 17 [`87c0c76`](https://github.com/PKief/angular-reactive-state/commit/87c0c76)
+- Update to Angular 16 [`98ee18f`](https://github.com/PKief/angular-reactive-state/commit/98ee18f)
+- Update dependencies [`04fc11f`](https://github.com/PKief/angular-reactive-state/commit/04fc11f)
+- Update dependencies [`5f597bf`](https://github.com/PKief/angular-reactive-state/commit/5f597bf)
+- Update dependencies [`030a5ed`](https://github.com/PKief/angular-reactive-state/commit/030a5ed)
+ 
 #### [v1.0.8](https://github.com/PKief/angular-reactive-state/compare/v1.0.7...v1.0.8) 
 
 > January 22, 2023 
