@@ -1,10 +1,9 @@
-const cpx = require('cpx');
 const fs = require('fs');
 const distDirectory = './dist/state';
 
 // Copy necessary files
-cpx.copySync('./LICENSE.md', distDirectory);
-cpx.copySync('./README.md', distDirectory);
+fs.copyFileSync('./LICENSE.md', `${distDirectory}/LICENSE.md`);
+fs.copyFileSync('./README.md', `${distDirectory}/README.md`);
 
 const repoPackageJsonInput = fs.readFileSync('./package.json', 'utf-8');
 const repoPackageJson = JSON.parse(repoPackageJsonInput);
