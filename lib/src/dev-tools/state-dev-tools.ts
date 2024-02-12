@@ -86,7 +86,7 @@ export class StateDevTools {
       map(state => JSON.parse(state)),
       mergeMap(state => from(Object.entries(state))),
       map(([storeName, state]) => ({
-        storeName,
+        storeName: storeName.match(/^\[(.*)\]/)?.[1] ?? storeName,
         state,
       })),
       withLatestFrom(this.storeRegistry.stores$),
@@ -94,7 +94,7 @@ export class StateDevTools {
         if (state) {
           // Temporarily save reference in history
           this.stateHistory.push(state);
-          store[storeName]?.update(() => state);
+          store[storeName]?.update(() => state, storeName);
         }
       })
     );
@@ -111,8 +111,9 @@ export class StateDevTools {
             mergeMap(key =>
               stores[key].state$.pipe(
                 filter(this.isStateUnprocessed.bind(this)),
-                map(state => {
-                  return { name: key, state: state };
+                withLatestFrom(stores[key].actions$),
+                map(([state, action]) => {
+                  return { name: `[${key}] ${action.title}`, state: state };
                 })
               )
             )

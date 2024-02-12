@@ -11,14 +11,17 @@ import {
 import { distinctUntilObjectChanged } from '../utils/distinctUntilObjectChanged';
 import { StoreRegistry } from './store-registry';
 
-type Action<State extends object> = (state: State) => State;
+type Action<State extends object> = {
+  reducer: (state: State) => State;
+  title: string;
+};
 
 export abstract class Store<State extends object> {
-  private readonly actionSource: Subject<Action<State>>;
   private readonly stateSource: BehaviorSubject<State>;
   private readonly registryService = inject(StoreRegistry);
 
   readonly state$: Observable<State>;
+  readonly actions$: Subject<Action<State>>;
 
   constructor(
     private name: string,
@@ -26,12 +29,12 @@ export abstract class Store<State extends object> {
   ) {
     this.stateSource = new BehaviorSubject<State>(initialState);
     this.state$ = this.stateSource.asObservable();
-    this.actionSource = new Subject<Action<State>>();
+    this.actions$ = new Subject<Action<State>>();
     this.registryService.addStore(name, this as unknown as Store<object>);
 
-    this.actionSource.pipe(observeOn(queueScheduler)).subscribe(action => {
+    this.actions$.pipe(observeOn(queueScheduler)).subscribe(action => {
       const currentState = this.stateSource.getValue();
-      const nextState = action(currentState);
+      const nextState = action.reducer(currentState);
       this.stateSource.next(nextState);
     });
   }
@@ -58,19 +61,22 @@ export abstract class Store<State extends object> {
     return this.stateSource.getValue();
   }
 
-  updateProperty(prop: keyof State, value: State[typeof prop]) {
-    this.update(state => ({
-      ...state,
-      [prop]: value,
-    }));
+  updateProperty(prop: keyof State, value: State[typeof prop], title: string) {
+    this.update(
+      state => ({
+        ...state,
+        [prop]: value,
+      }),
+      title
+    );
   }
 
-  update(stateChanger: (state: State) => State) {
-    this.actionSource.next(stateChanger);
+  update(stateChanger: (state: State) => State, title: string) {
+    this.actions$.next({ reducer: stateChanger, title });
   }
 
   destroy() {
-    this.actionSource.complete();
+    this.actions$.complete();
     this.stateSource.complete();
     this.registryService.deleteStore(this.name);
   }
