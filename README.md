@@ -132,15 +132,16 @@ There are two possibilities to update the state in the store:
 
 ```ts
 // replace a root-level property of the state with a new value
-this.todoStore.updateProperty('todos', ['my first todo']);
+this.todoStore.updateProperty('todos', ['my first todo'], 'add todo');
 
 // update the whole state at once
-this.todoStore.update(state => {
-  return {
+this.todoStore.update(
+  state => ({
     ...state,
     todos: [...state.todos, 'my first todo'],
-  };
-});
+  }),
+  'add todo'
+);
 ```
 
 In combination with the `snapshot` functionality it would also be possible to update the state like this:
@@ -160,4 +161,30 @@ When a store service is not needed anymore it can be destroyed by calling the `d
 ```ts
 // store is not triggering events
 this.todoStore.destroy();
+```
+
+### Usage of Redux Devtools
+
+To use the dev tools it is necessary to import the dev tools module:
+
+```ts
+import { StateDevToolsModule } from 'angular-reactive-state/dev-tools';
+
+@Component({
+  ...
+  imports: [StateDevToolsModule],
+  standalone: true,
+})
+export class AppComponent { ... }
+```
+
+or when there's a module
+
+```ts
+import { StateDevToolsModule } from 'angular-reactive-state/dev-tools';
+
+@NgModule({
+  imports: [StateDevToolsModule],
+})
+export class AppModule {}
 ```
