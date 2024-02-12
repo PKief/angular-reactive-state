@@ -60,7 +60,7 @@ describe('Store', () => {
 
   it('should trigger state changes via custom actions', () => {
     const stateValue = store.snapshot.a;
-    expect(stateValue).toEqual({ a: 'update a' });
+    expect(stateValue).toEqual({ a: 'a' });
     store.update(
       state => ({
         ...state,
