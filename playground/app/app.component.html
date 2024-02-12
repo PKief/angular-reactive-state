@@ -1,45 +1,50 @@
-<h1>Angular State</h1>
-<h2>Playground</h2>
-
-<h3>Todos</h3>
-
-<input
-  type="text"
-  placeholder="New Todo"
-  #todoInput
-  (keydown.enter)="addTodo(todoInput.value); todoInput.value = ''"
-/>
-
-@if (uncompletedTodos$().length > 0) {
-  <h4>Open</h4>
-
-  <ul>
-    @for (todo of uncompletedTodos$(); track todo.id) {
-      <li>
-        <div>
-          <span>{{ todo.description }}</span>
-          <button (click)="completeTodo(todo)">Complete</button>
+<div
+  class="h-100 w-full flex items-center justify-center bg-teal-lightest font-sans"
+>
+  <div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
+    <div class="mb-4">
+      <h1 class="text-grey-darkest font-bold">Todo List</h1>
+      <div class="flex mt-4">
+        <input
+          class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
+          placeholder="What needs to be done?"
+          (keydown.enter)="addTodoButton.click()"
+          #todoInput
+        />
+        <button
+          #addTodoButton
+          class="flex-no-shrink p-2 border-2 rounded text-teal border-teal hover:text-[#50d71e] hover:bg-teal"
+          (click)="addTodo(todoInput.value); todoInput.value = ''"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+    <div>
+      @for (todo of todos$(); track todo.id) {
+        <div class="flex mb-4 items-center">
+          <p
+            class="w-full text-grey-darkest"
+            [class.line-through]="todo.completed"
+          >
+            {{ todo.description }}
+          </p>
+          <button
+            class="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded hover:text-[#50d71e] text-green border-green hover:bg-green"
+            (click)="toggleTodo(todo)"
+          >
+            {{ todo.completed ? 'Undo' : 'Done' }}
+          </button>
+          <button
+            class="flex-no-shrink p-2 ml-2 border-2 rounded text-red border-red hover:text-[#50d71e] hover:bg-red"
+            (click)="removeTodo(todo)"
+          >
+            Remove
+          </button>
         </div>
-      </li>
-    } @empty {
-      No uncompleted todos
-    }
-  </ul>
-}
-
-@if (completedTodos$().length > 0) {
-  <h4>Completed</h4>
-
-  <ul>
-    @for (todo of completedTodos$(); track todo.id) {
-      <li>
-        <div>
-          <span>{{ todo.description }}</span>
-          <button (click)="completeTodo(todo)">Uncomplete</button>
-        </div>
-      </li>
-    } @empty {
-      No uncompleted todos
-    }
-  </ul>
-}
+      } @empty {
+        Nothing to do.
+      }
+    </div>
+  </div>
+</div>

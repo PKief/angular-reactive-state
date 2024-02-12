@@ -1,11 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from 'angular-reactive-state/public-api';
-
-export type Todo = {
-  id: string;
-  description: string;
-  completed: boolean;
-};
+import { Todo } from './todo';
 
 export type TodoStoreState = {
   todos: Todo[];
@@ -26,6 +21,13 @@ export class TodoStoreService extends Store<TodoStoreState> {
         ...state.todos,
         { description, completed: false, id: String(state.todos.length) },
       ],
+    }));
+  }
+
+  removeTodo(todo: Todo) {
+    this.update(state => ({
+      ...state,
+      todos: state.todos.filter(t => t.id !== todo.id),
     }));
   }
 

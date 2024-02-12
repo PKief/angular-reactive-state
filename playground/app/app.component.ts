@@ -2,40 +2,45 @@ import {
   ChangeDetectionStrategy,
   Component,
   Signal,
-  computed,
+  effect,
 } from '@angular/core';
-import { Todo, TodoStoreService } from './services/todo-store.service';
+import { StateDevToolsModule } from 'angular-reactive-state/dev-tools';
+import { Todo } from './todo';
+import { TodoStoreService } from './todo-store.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [StateDevToolsModule],
+  standalone: true,
 })
 export class AppComponent {
-  readonly completedTodos$: Signal<Todo[]>;
-  readonly uncompletedTodos$: Signal<Todo[]>;
+  readonly todos$: Signal<Todo[]>;
 
   constructor(private todoStore: TodoStoreService) {
-    const allTodos$ = this.todoStore.selectAsSignal(state => state.todos);
+    this.todos$ = this.todoStore.selectAsSignal(state => state.todos);
 
-    this.completedTodos$ = computed(() =>
-      allTodos$()?.filter(t => t.completed)
-    );
-    this.uncompletedTodos$ = computed(() =>
-      allTodos$()?.filter(t => !t.completed)
-    );
+    effect(() => {
+      this.todos$().sort((a, b) =>
+        a.completed === b.completed ? 0 : a.completed ? 1 : -1
+      );
+    });
   }
 
   addTodo(description: string) {
     this.todoStore.addTodo(description);
   }
 
-  completeTodo(todo: Todo) {
-    this.todoStore.completeTodo(todo);
+  removeTodo(todo: Todo) {
+    this.todoStore.removeTodo(todo);
   }
 
-  uncompleteTodo(todo: Todo) {
-    this.todoStore.uncompleteTodo(todo);
+  toggleTodo(todo: Todo) {
+    if (todo.completed) {
+      this.todoStore.uncompleteTodo(todo);
+    } else {
+      this.todoStore.completeTodo(todo);
+    }
   }
 }

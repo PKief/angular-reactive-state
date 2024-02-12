@@ -58,8 +58,7 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["playground/favicon.ico", "playground/assets"],
-            "styles": ["playground/styles.scss"],
+            "assets": ["playground/favicon.ico"],
             "scripts": []
           },
           "configurations": {
