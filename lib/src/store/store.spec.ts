@@ -10,6 +10,7 @@ type TestStoreState = {
     b: string;
   };
 };
+
 class TestStore extends Store<TestStoreState> {
   constructor() {
     super('TestStore', {
@@ -50,7 +51,7 @@ describe('Store', () => {
   it('should subscribe to state changes', async () => {
     const stateValue = await firstValueFrom(store.select(state => state.a));
     expect(stateValue).toEqual({ a: 'a' });
-    store.updateProperty('a', { a: 'A' });
+    store.updateProperty('a', { a: 'A' }, 'a');
     const updatedStateValue = await firstValueFrom(
       store.select(state => state.a)
     );
@@ -59,11 +60,14 @@ describe('Store', () => {
 
   it('should trigger state changes via custom actions', () => {
     const stateValue = store.snapshot.a;
-    expect(stateValue).toEqual({ a: 'a' });
-    store.update(state => ({
-      ...state,
-      a: { a: 'A' },
-    }));
+    expect(stateValue).toEqual({ a: 'update a' });
+    store.update(
+      state => ({
+        ...state,
+        a: { a: 'A' },
+      }),
+      'update a'
+    );
     const updatedStateValue = store.snapshot.a;
     expect(updatedStateValue).toEqual({ a: 'A' });
   });
@@ -75,7 +79,7 @@ describe('Store', () => {
     store.select(state => state.a).subscribe(() => countStateChangesA++);
     store.select(state => state.b).subscribe(() => countStateChangesB++);
 
-    store.updateProperty('a', { a: 'A' });
+    store.updateProperty('a', { a: 'A' }, 'update a');
 
     expect(countStateChangesA).toEqual(2);
     expect(countStateChangesB).toEqual(1);
